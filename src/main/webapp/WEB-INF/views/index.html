@@ -1,0 +1,92 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>人员信息</title>
+	<link rel="stylesheet" type="text/css" href="css/style.css" media="screen"/>
+	<script type="text/javascript" src="js/jquery-3.0.0.min.js"></script>
+	<script type="text/javascript" src="js/jquery.paginate.js"></script>
+	<script type="text/javascript">
+		const pageSize = 3;
+	</script>
+	<style type="text/css">
+		.demo {
+		    width: 500px;
+		    height: 100px;
+		    line-height: 100px;
+		    padding: 10px;
+		    margin: 10px auto;
+		    border: 1px solid #fff;
+		    background-color: #f7f7f7;
+		}
+		table {
+			border:solid #000 1px;
+			padding: 0px;
+		}
+		table td {
+			border:solid #000 1px;
+		}
+		.pageDiv{
+			width:310px;
+			margin:2px;
+			margin: auto;
+            padding:50px 20px;
+            text-align:center;
+			background-color:white;
+		}
+	</style>
+</head>
+<body>
+	<div id="addPerson" style="margin-top: 50px; width:250px; margin-left: auto; margin-right: auto; display: none;">
+		<form id="personForm">
+			 姓名: <input type="text" name="name" />
+			 <br/>
+			 年龄: <input type="text" name="age" />
+			 <br/>
+		</form>
+		<button onclick="submit_form()">提交</button>
+	</div>
+	<div id="personMsg" style="width: 100%; height: 100%; text-align: center;">
+		
+	</div>
+	<script type="text/javascript">
+		function submit_form(){
+			$.ajax({
+				 type: "POST",
+	             url: "person/save",
+	             data: JSON.stringify({name: $('#personForm input[name="name"]').val(), age: $('#personForm input[name="age"]').val()}),
+	             dataType: "json",  
+	             contentType: "application/json",
+	             success: function(data){
+	            	 location.reload(true);
+	             },
+	             error: function(data){
+	            	 console.log(data);
+	             }
+			});
+		}	
+	
+		function getPage(page){
+			$.ajax({
+				 type: "GET",
+	             url: "person/page",
+	             data: {"pageNumber": page, "pageSize": pageSize},
+	             dataType: "text",
+	             success: function(data){
+	            	 $("#personMsg").html(data);
+	            	 $("#add").click(function(){
+	     				$('#personMsg').css("display", "none");
+	     				$('#addPerson').css("display", "")
+	     			});
+	             },
+	             error: function(data){
+	            	 alert(data);
+	             }
+			});
+		}
+	
+		$(function(){
+			getPage(1);
+		});
+	</script>
+</body>
+</html>
